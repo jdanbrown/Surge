@@ -28,7 +28,7 @@ public enum MatrixAxies {
 public struct Matrix<Scalar> where Scalar: FloatingPoint, Scalar: ExpressibleByFloatLiteral {
     public let rows: Int
     public let columns: Int
-    var grid: [Scalar]
+    public var grid: [Scalar]
 
     public init(rows: Int, columns: Int, repeatedValue: Scalar) {
         self.rows = rows
@@ -37,13 +37,36 @@ public struct Matrix<Scalar> where Scalar: FloatingPoint, Scalar: ExpressibleByF
         self.grid = [Scalar](repeating: repeatedValue, count: rows * columns)
     }
 
-    public init<T: Collection, U: Collection>(_ contents: T) where T.Element == U, U.Element == Scalar {
-        self.init(rows: contents.count, columns: contents.first!.count, repeatedValue: 0.0)
+    // For Matrix([[...], ...])
+    public init<T: Collection, U: Collection>(_ contents: T, rows: Int? = nil, columns: Int? = nil) where
+      T.Element == U, U.Element == Scalar
+    {
+        self.init(
+          rows: rows ?? contents.count,
+          columns: columns ?? (contents.first == nil ? 0 : contents.first!.count),
+          repeatedValue: 0.0
+        )
 
-        for (i, row) in contents.enumerated() {
-            precondition(row.count == columns, "All rows should have the same number of columns")
-            grid.replaceSubrange(i*columns ..< (i + 1)*columns, with: row)
+        // Optimized [TODO github PR]
+        //  - Measurement: printTime { Matrix<Float>((0..<1000).map { i in Array(repeating: 3, count: 1000) }) }
+        // Old [0.080s]
+        // for (i, row) in contents.enumerated() {
+        //     precondition(row.count == self.columns, "All rows should have the same number of columns")
+        //     grid.replaceSubrange(i*self.columns ..< (i + 1)*self.columns, with: row)
+        // }
+        // New [0.015s]
+        self.grid = contents.flatMap { [self] (row: U) -> [Scalar] in // [Scalar] i/o U else the deprecated flatMap (now compactMap)
+            precondition(row.count == self.columns, "All rows should have the same number of columns")
+            return Array(row)
         }
+
+    }
+
+    // For Matrix(rows, columns, [[...], ...]), when rows or columns is 0 but the other isn't
+    public init<T: Collection, U: Collection>(rows: Int, columns: Int, gridRows: T) where
+      T.Element == U, U.Element == Scalar
+    {
+      self.init(gridRows, rows: rows, columns: columns)
     }
 
     public init(row: [Scalar]) {
@@ -115,6 +138,37 @@ public struct Matrix<Scalar> where Scalar: FloatingPoint, Scalar: ExpressibleByF
     private func indexIsValidForRow(_ row: Int, column: Int) -> Bool {
         return row >= 0 && row < rows && column >= 0 && column < columns
     }
+
+    public var shape: (Int, Int) {
+      get { return (rows, columns) }
+    }
+
+    public var isEmpty: Bool {
+      get { return rows * columns == 0 }
+    }
+
+    public func vect(_ f: ([Scalar]) -> [Scalar]) -> Matrix<Scalar> {
+      var result = Matrix<Scalar>(rows: rows, columns: columns, repeatedValue: 0.0)
+      result.grid = f(grid)
+      return result
+    }
+
+    public func mapRows(_ f: (ArraySlice<Scalar>) -> [Scalar]) -> Matrix<Scalar> {
+      return Matrix<Scalar>(
+        rows: rows,
+        columns: columns,
+        gridRows: self.map(f) // self.map is row-major
+      )
+    }
+
+    public func flipVertically() -> Matrix<Scalar> {
+      return Matrix<Scalar>(
+        rows: rows,
+        columns: columns,
+        gridRows: Array(self.reversed()) // row-major
+      )
+    }
+
 }
 
 // MARK: - Printable
@@ -237,8 +291,12 @@ public func mul(_ x: Matrix<Float>, _ y: Matrix<Float>) -> Matrix<Float> {
     precondition(x.columns == y.rows, "Matrix dimensions not compatible with multiplication")
 
     var results = Matrix<Float>(rows: x.rows, columns: y.columns, repeatedValue: 0.0)
-    results.grid.withUnsafeMutableBufferPointer { pointer in
-        cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, Int32(x.rows), Int32(y.columns), Int32(x.columns), 1.0, x.grid, Int32(x.columns), y.grid, Int32(y.columns), 0.0, pointer.baseAddress!, Int32(y.columns))
+    if results.rows > 0 && results.columns > 0 { // Avoid https://github.com/mattt/Surge/issues/92
+      if x.columns > 0 { // HACK Avoid crash, mimic numpy (nonempty zero matrix) [TODO github issue]
+        results.grid.withUnsafeMutableBufferPointer { pointer in
+            cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, Int32(x.rows), Int32(y.columns), Int32(x.columns), 1.0, x.grid, Int32(x.columns), y.grid, Int32(y.columns), 0.0, pointer.baseAddress!, Int32(y.columns))
+        }
+      }
     }
 
     return results
@@ -248,8 +306,12 @@ public func mul(_ x: Matrix<Double>, _ y: Matrix<Double>) -> Matrix<Double> {
     precondition(x.columns == y.rows, "Matrix dimensions not compatible with multiplication")
 
     var results = Matrix<Double>(rows: x.rows, columns: y.columns, repeatedValue: 0.0)
-    results.grid.withUnsafeMutableBufferPointer { pointer in
-        cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, Int32(x.rows), Int32(y.columns), Int32(x.columns), 1.0, x.grid, Int32(x.columns), y.grid, Int32(y.columns), 0.0, pointer.baseAddress!, Int32(y.columns))
+    if results.rows > 0 && results.columns > 0 { // Avoid https://github.com/mattt/Surge/issues/92
+      if x.columns > 0 { // HACK Avoid crash, mimic numpy (nonempty zero matrix) [TODO github issue]
+        results.grid.withUnsafeMutableBufferPointer { pointer in
+            cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, Int32(x.rows), Int32(y.columns), Int32(x.columns), 1.0, x.grid, Int32(x.columns), y.grid, Int32(y.columns), 0.0, pointer.baseAddress!, Int32(y.columns))
+        }
+      }
     }
 
     return results
@@ -346,6 +408,11 @@ public func sum(_ x: Matrix<Float>, axies: MatrixAxies = .column) -> Matrix<Floa
 public func inv(_ x: Matrix<Float>) -> Matrix<Float> {
     precondition(x.rows == x.columns, "Matrix must be square")
 
+    // Mimic numpy i/o crashing [TODO github issue]
+    if x.rows == 0 && x.columns == 0 {
+      return x
+    }
+
     var results = x
 
     var ipiv = [__CLPK_integer](repeating: 0, count: x.rows * x.rows)
@@ -368,6 +435,11 @@ public func inv(_ x: Matrix<Float>) -> Matrix<Float> {
 
 public func inv(_ x: Matrix<Double>) -> Matrix<Double> {
     precondition(x.rows == x.columns, "Matrix must be square")
+
+    // Mimic numpy i/o crashing [TODO github issue]
+    if x.rows == 0 && x.columns == 0 {
+      return x
+    }
 
     var results = x
 
