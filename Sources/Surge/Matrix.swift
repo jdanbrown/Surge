@@ -135,6 +135,18 @@ public struct Matrix<Scalar> where Scalar: FloatingPoint, Scalar: ExpressibleByF
         }
     }
 
+    // Like np X[rows, :]
+    //  - (subscript(columns) is below, specialized to Float/Double i/o Scalar b/c transpose() requires it)
+    public subscript(rows rows: Range<Int>) -> Matrix<Scalar> {
+      get {
+        return Matrix(
+          rows: rows.count,
+          columns: columns,
+          gridRows: rows.map { self[row: $0] }
+        )
+      }
+    }
+
     private func indexIsValidForRow(_ row: Int, column: Int) -> Bool {
         return row >= 0 && row < rows && column >= 0 && column < columns
     }
@@ -147,14 +159,19 @@ public struct Matrix<Scalar> where Scalar: FloatingPoint, Scalar: ExpressibleByF
       get { return rows * columns == 0 }
     }
 
-    public func vect(_ f: ([Scalar]) -> [Scalar]) -> Matrix<Scalar> {
-      var result = Matrix<Scalar>(rows: rows, columns: columns, repeatedValue: 0.0)
+    // Like np.flatten()
+    public func flatten() -> [Scalar] {
+      return grid
+    }
+
+    public func vect<X>(_ f: ([Scalar]) -> [X]) -> Matrix<X> {
+      var result = Matrix<X>(rows: rows, columns: columns, repeatedValue: 0.0)
       result.grid = f(grid)
       return result
     }
 
-    public func mapRows(_ f: (ArraySlice<Scalar>) -> [Scalar]) -> Matrix<Scalar> {
-      return Matrix<Scalar>(
+    public func mapRows<X>(_ f: (ArraySlice<Scalar>) -> [X]) -> Matrix<X> {
+      return Matrix<X>(
         rows: rows,
         columns: columns,
         gridRows: self.map(f) // self.map is row-major
@@ -168,6 +185,38 @@ public struct Matrix<Scalar> where Scalar: FloatingPoint, Scalar: ExpressibleByF
         gridRows: Array(self.reversed()) // row-major
       )
     }
+
+}
+
+extension Matrix where Scalar == Float {
+
+  // Like np X.T
+  public var T: Matrix {
+    get { return transpose(self) }
+  }
+
+  // Like np X[:, columns]
+  public subscript(columns columns: Range<Int>) -> Matrix {
+    get {
+      return self.T[rows: columns].T
+    }
+  }
+
+}
+
+extension Matrix where Scalar == Double {
+
+  // Like np X.T
+  public var T: Matrix {
+    get { return transpose(self) }
+  }
+
+  // Like np X[:, columns]
+  public subscript(columns columns: Range<Int>) -> Matrix {
+    get {
+      return self.T[rows: columns].T
+    }
+  }
 
 }
 
