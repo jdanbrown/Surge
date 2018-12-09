@@ -77,6 +77,11 @@ public struct Matrix<Scalar> where Scalar: FloatingPoint, Scalar: ExpressibleByF
         self.init(rows: column.count, columns: 1, grid: column)
     }
 
+    // init(columns:) is below, specialized to Float/Double i/o Scalar b/c transpose() requires it
+    public init(rows: [[Scalar]]) {
+        self.init(rows)
+    }
+
     public init(rows: Int, columns: Int, grid: [Scalar]) {
         precondition(grid.count == rows * columns)
 
@@ -136,7 +141,7 @@ public struct Matrix<Scalar> where Scalar: FloatingPoint, Scalar: ExpressibleByF
     }
 
     // Like np X[rows, :]
-    //  - (subscript(columns) is below, specialized to Float/Double i/o Scalar b/c transpose() requires it)
+    //  - subscript(columns:) is below, specialized to Float/Double i/o Scalar b/c transpose() requires it
     public subscript(rows rows: Range<Int>) -> Matrix<Scalar> {
       get {
         return Matrix(
@@ -195,11 +200,18 @@ extension Matrix where Scalar == Float {
     get { return transpose(self) }
   }
 
+  public init(columns: [[Scalar]]) {
+    self = Matrix(rows: columns).T
+  }
+
   // Like np X[:, columns]
   public subscript(columns columns: Range<Int>) -> Matrix {
-    get {
-      return self.T[rows: columns].T
-    }
+    get { return self.T[rows: columns].T }
+  }
+
+  // Like np X[rows, columns]
+  public subscript(rows rows: Range<Int>, columns columns: Range<Int>) -> Matrix {
+    get { return self[rows: rows].T[rows: columns].T }
   }
 
 }
@@ -211,10 +223,21 @@ extension Matrix where Scalar == Double {
     get { return transpose(self) }
   }
 
+  public init(columns: [[Scalar]]) {
+    self = Matrix(rows: columns).T
+  }
+
   // Like np X[:, columns]
   public subscript(columns columns: Range<Int>) -> Matrix {
     get {
       return self.T[rows: columns].T
+    }
+  }
+
+  // Like np X[rows, columns]
+  public subscript(rows rows: Range<Int>, columns columns: Range<Int>) -> Matrix {
+    get {
+      return self[rows: rows].T[rows: columns].T
     }
   }
 
