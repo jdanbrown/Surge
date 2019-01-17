@@ -205,13 +205,15 @@ extension Matrix where Scalar == Float {
   }
 
   // Like np X[:, columns]
+  //  - WARNING Slow: self.T
   public subscript(columns columns: Range<Int>) -> Matrix {
     get { return self.T[rows: columns].T }
   }
 
   // Like np X[rows, columns]
+  //  - WARNING Slow: M[columns:]
   public subscript(rows rows: Range<Int>, columns columns: Range<Int>) -> Matrix {
-    get { return self[rows: rows].T[rows: columns].T }
+    get { return self[rows: rows][columns: columns] }
   }
 
 }
@@ -228,13 +230,15 @@ extension Matrix where Scalar == Double {
   }
 
   // Like np X[:, columns]
+  //  - WARNING Slow: self.T
   public subscript(columns columns: Range<Int>) -> Matrix {
     get { return self.T[rows: columns].T }
   }
 
   // Like np X[rows, columns]
+  //  - WARNING Slow: M[columns:]
   public subscript(rows rows: Range<Int>, columns columns: Range<Int>) -> Matrix {
-    get { return self[rows: rows].T[rows: columns].T }
+    get { return self[rows: rows][columns: columns] }
   }
 
 }
