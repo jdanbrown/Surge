@@ -1118,7 +1118,7 @@
 			};
 			name = Release;
 		};
-		B7ADC49B21F2DA16009191C0 /* Release-AppStore */ = {
+		B7ADC49B21F2DA16009191C0 /* Stage */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1172,9 +1172,9 @@
 				VERSION_INFO_PREFIX = "";
 				WATCHOS_DEPLOYMENT_TARGET = 4.0;
 			};
-			name = "Release-AppStore";
+			name = Stage;
 		};
-		B7ADC49C21F2DA16009191C0 /* Release-AppStore */ = {
+		B7ADC49C21F2DA16009191C0 /* Stage */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -1191,9 +1191,9 @@
 				PRODUCT_NAME = Surge;
 				SKIP_INSTALL = YES;
 			};
-			name = "Release-AppStore";
+			name = Stage;
 		};
-		B7ADC49D21F2DA16009191C0 /* Release-AppStore */ = {
+		B7ADC49D21F2DA16009191C0 /* Stage */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
@@ -1203,9 +1203,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mattt.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
-			name = "Release-AppStore";
+			name = Stage;
 		};
-		B7ADC49E21F2DA16009191C0 /* Release-AppStore */ = {
+		B7ADC49E21F2DA16009191C0 /* Stage */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -1234,9 +1234,9 @@
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
 			};
-			name = "Release-AppStore";
+			name = Stage;
 		};
-		B7ADC49F21F2DA16009191C0 /* Release-AppStore */ = {
+		B7ADC49F21F2DA16009191C0 /* Stage */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
@@ -1258,9 +1258,9 @@
 				SDKROOT = macosx;
 				SWIFT_VERSION = 4.0;
 			};
-			name = "Release-AppStore";
+			name = Stage;
 		};
-		B7ADC4A021F2DA16009191C0 /* Release-AppStore */ = {
+		B7ADC4A021F2DA16009191C0 /* Stage */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -1289,9 +1289,9 @@
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
-			name = "Release-AppStore";
+			name = Stage;
 		};
-		B7ADC4A121F2DA16009191C0 /* Release-AppStore */ = {
+		B7ADC4A121F2DA16009191C0 /* Stage */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
@@ -1313,9 +1313,9 @@
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
-			name = "Release-AppStore";
+			name = Stage;
 		};
-		B7ADC4A221F2DA16009191C0 /* Release-AppStore */ = {
+		B7ADC4A221F2DA16009191C0 /* Stage */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -1344,7 +1344,7 @@
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
-			name = "Release-AppStore";
+			name = Stage;
 		};
 		F84A6AB519A9A72F007B53E1 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1540,7 +1540,7 @@
 			buildConfigurations = (
 				614AD3301FC0AD99002BFE1C /* Debug */,
 				614AD3311FC0AD99002BFE1C /* Release */,
-				B7ADC49E21F2DA16009191C0 /* Release-AppStore */,
+				B7ADC49E21F2DA16009191C0 /* Stage */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1550,7 +1550,7 @@
 			buildConfigurations = (
 				614AD3321FC0AD99002BFE1C /* Debug */,
 				614AD3331FC0AD99002BFE1C /* Release */,
-				B7ADC49F21F2DA16009191C0 /* Release-AppStore */,
+				B7ADC49F21F2DA16009191C0 /* Stage */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1560,7 +1560,7 @@
 			buildConfigurations = (
 				614AD3631FC0B001002BFE1C /* Debug */,
 				614AD3641FC0B001002BFE1C /* Release */,
-				B7ADC4A021F2DA16009191C0 /* Release-AppStore */,
+				B7ADC4A021F2DA16009191C0 /* Stage */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1570,7 +1570,7 @@
 			buildConfigurations = (
 				614AD3661FC0B001002BFE1C /* Debug */,
 				614AD3671FC0B001002BFE1C /* Release */,
-				B7ADC4A121F2DA16009191C0 /* Release-AppStore */,
+				B7ADC4A121F2DA16009191C0 /* Stage */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1580,7 +1580,7 @@
 			buildConfigurations = (
 				614AD3881FC0B125002BFE1C /* Debug */,
 				614AD3891FC0B125002BFE1C /* Release */,
-				B7ADC4A221F2DA16009191C0 /* Release-AppStore */,
+				B7ADC4A221F2DA16009191C0 /* Stage */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1590,7 +1590,7 @@
 			buildConfigurations = (
 				F84A6AB519A9A72F007B53E1 /* Debug */,
 				F84A6AB619A9A72F007B53E1 /* Release */,
-				B7ADC49D21F2DA16009191C0 /* Release-AppStore */,
+				B7ADC49D21F2DA16009191C0 /* Stage */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1600,7 +1600,7 @@
 			buildConfigurations = (
 				F8A1E1BB19917A79009735E2 /* Debug */,
 				F8A1E1BC19917A79009735E2 /* Release */,
-				B7ADC49B21F2DA16009191C0 /* Release-AppStore */,
+				B7ADC49B21F2DA16009191C0 /* Stage */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1610,7 +1610,7 @@
 			buildConfigurations = (
 				F8A1E1BE19917A79009735E2 /* Debug */,
 				F8A1E1BF19917A79009735E2 /* Release */,
-				B7ADC49C21F2DA16009191C0 /* Release-AppStore */,
+				B7ADC49C21F2DA16009191C0 /* Stage */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
